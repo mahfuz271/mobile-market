@@ -22,7 +22,7 @@ const DashboardLayout = () => {
                                     </Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/dashboard/addproduct">
+                                    <Link className="nav-link" to="/dashboard/myproducts?addproduct=true">
                                         Add A product
                                     </Link>
                                 </li>

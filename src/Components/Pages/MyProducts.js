@@ -2,15 +2,18 @@ import React, { useEffect, useState, useContext } from 'react';
 import { AuthContext } from '../../Contexts/UserContext';
 import { toast } from 'react-toastify';
 import useDocumentTitle from '../../Layout/useDocumentTitle';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams, useLocation } from 'react-router-dom';
 
 const MyProducts = () => {
+    let [searchParams, setSearchParams] = useSearchParams();
+    let location = useLocation()
+
     useDocumentTitle("Manage My Products");
-    const { user, logOut, setLoading, loading } = useContext(AuthContext);
+    const { user, logOut, setLoading, loading, brands } = useContext(AuthContext);
 
     const [products, setProducts] = useState([])
 
-    useEffect(() => {
+    const reloadProducts = () => {
         fetch(process.env.REACT_APP_SERVER_URL + `/myproducts?email=${user?.email}`, {
             headers: {
                 authorization: `Bearer ${localStorage.getItem('accessToken')}`
@@ -25,7 +28,19 @@ const MyProducts = () => {
             .then(data => {
                 setProducts(data);
             })
-    }, [user?.email, logOut])
+    }
+
+    useEffect(reloadProducts, [user?.email, logOut]);
+
+    useEffect(() => {
+        if (searchParams.get("addproduct")) {
+            document.querySelector('.add_product').click();
+            let form = document.getElementById('updateform');
+            form.querySelector(".modal-title").innerHTML = "Add Product";
+            form.reset();
+            form._id.value = 'new';
+        }
+    }, [location])
 
     const handleDelete = id => {
         const proceed = window.confirm('Are you sure, you want to delete');
@@ -55,32 +70,29 @@ const MyProducts = () => {
     const handleModify = id => {
         const current = products.find(odr => odr._id === id);
         let form = document.getElementById('updateform');
+        form.querySelector(".modal-title").innerHTML = "Edit Product";
+
         form._id.value = id;
-        form.title.value = current?.title || '';
-        form.comment.value = current?.comment || '';
-        form.rating.value = current?.rating || '';
-        if (current?.rating) {
-            document.querySelectorAll('.rating_star')[current.rating - 1].click();
+        for (let k in current) {
+            let inp = form.querySelector("[name='" + k + "']");
+            if(inp){
+                inp.value = current[k] || '';
+            }
+
         }
     }
 
-    const handleUpdate = event => {
+    const handleSubmit = event => {
         event.preventDefault();
         const form = event.target;
-        const id = form._id.value;
-        const title = form.title.value;
-        const comment = form.comment.value;
-        const rating = form.rating.value;
 
-        const product = {
-            title,
-            comment,
-            rating,
-        }
+        let data = new FormData(form);
+        data.append('email', user.email);
+        let product = Object.fromEntries(data);
 
         setLoading(true);
-        fetch(process.env.REACT_APP_SERVER_URL + `/myproducts/${id}`, {
-            method: 'PATCH',
+        fetch(process.env.REACT_APP_SERVER_URL + `/myproducts`, {
+            method: 'POST',
             headers: {
                 'content-type': 'application/json',
                 authorization: `Bearer ${localStorage.getItem('accessToken')}`
@@ -95,17 +107,8 @@ const MyProducts = () => {
                 return res.json();
             })
             .then(data => {
-                if (data.modifiedCount > 0) {
-                    const remaining = products.filter(odr => odr._id !== id);
-                    const updated = products.find(odr => odr._id === id);
-                    updated.title = title
-                    updated.comment = comment
-                    updated.rating = rating
-
-                    const newproducts = [updated, ...remaining];
-                    setProducts(newproducts);
-                    toast('Updated successfully');
-                }
+                toast('successfully saved');
+                setSearchParams("");
                 form.reset();
                 setLoading(false);
                 document.querySelector('#modalCloseBs')?.click();
@@ -115,6 +118,7 @@ const MyProducts = () => {
     }
     return (
         <div className='my-5 text-center'>
+            <button data-bs-toggle="modal" data-bs-target="#exampleModal" className='d-none add_product'>add product</button>
             {products.length > 0 ?
                 <div className="overflow-x-auto w-full row">
                     <h2 className='mb-5'>You have {products.length} products</h2>
@@ -139,7 +143,7 @@ const MyProducts = () => {
                                         </th>
                                         <td className='text-start'>{s.title}</td>
                                         <td>{s?.created}</td>
-                                        <td><Link to={`/services/${s.service_id}`}>Go to service</Link></td>
+                                        <td><Link to={`/product/${s._id}`}>View</Link></td>
                                     </tr>
                                 })
                             }
@@ -150,20 +154,63 @@ const MyProducts = () => {
             }
             <div className="modal fade" id="exampleModal" tabIndex="-1" aria-hidden="true">
                 <div className="modal-dialog">
-                    <form className="modal-content" onSubmit={handleUpdate} id="updateform">
+                    <form className="modal-content" onSubmit={handleSubmit} id="updateform">
                         <div className="modal-header">
-                            <h5 className="modal-title">Update product</h5>
+                            <h5 className="modal-title">Product</h5>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body text-start">
-                            <input type="hidden" name="_id" id='_id' />
+                            <input type="hidden" name="_id" />
                             <div className="form-group">
-                                <label className="form-label text-primary" htmlFor="title">Title</label>
-                                <input className="form-control" id="title" name='title' type="text" placeholder="" required="" />
+                                <label className="form-label text-primary">Title</label>
+                                <input className="form-control" name='title' type="text" required />
                             </div>
                             <div className="form-group mt-4">
-                                <label className="form-label text-primary">Comment</label>
-                                <textarea className="form-control" id='comment' name='comment' required></textarea>
+                                <label className="form-label text-primary text-capitalize">price</label>
+                                <input className="form-control" name='price' type="number" required />
+                            </div>
+                            <div className="form-group mt-4">
+                                <label className="form-label text-primary text-capitalize">mobile number</label>
+                                <input className="form-control" name='mobile_number' type="number" required />
+                            </div>
+                            <div className="form-group mt-4">
+                                <label className="form-label text-primary">Description</label>
+                                <textarea className="form-control" name='description' required></textarea>
+                            </div>
+                            <div className="form-group mt-4">
+                                <label className="form-label text-primary text-capitalize">Year of purchase</label>
+                                <input className="form-control" name='year_of_purchase' type="number" required="" />
+                            </div>
+                            <div className="form-group mt-4">
+                                <select className="form-select" name='brand' required>
+                                    <option value="">Brand</option>
+                                    {
+                                        brands.map((s, i) => {
+                                            return <option key={i}>{s.name}</option>
+                                        })
+                                    }
+                                </select>
+                            </div>
+                            <div className="form-group mt-4">
+                                <select className="form-select" name='location' required>
+                                    <option value="">Location</option>
+                                    <option>Barisal</option>
+                                    <option>Chattagram</option>
+                                    <option>Dhaka</option>
+                                    <option>Khulna</option>
+                                    <option>Rajshahi</option>
+                                    <option>Rangpur</option>
+                                    <option>Sylhet</option>
+                                    <option>Mymensingh</option>
+                                </select>
+                            </div>
+                            <div className="form-group my-4">
+                                <select className="form-select" name='condition' required>
+                                    <option value="">Condition</option>
+                                    <option value="Excellent">Excellent</option>
+                                    <option value="Good">Good</option>
+                                    <option value="Fair">Fair</option>
+                                </select>
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" id='modalCloseBs' data-bs-dismiss="modal">Close</button>
