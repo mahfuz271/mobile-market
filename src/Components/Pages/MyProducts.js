@@ -9,7 +9,7 @@ const MyProducts = () => {
     let location = useLocation()
 
     useDocumentTitle("Manage My Products");
-    const { user, logOut, setLoading, loading, brands } = useContext(AuthContext);
+    const { adlocation, user, logOut, setLoading, loading, brands } = useContext(AuthContext);
 
     const [products, setProducts] = useState([])
 
@@ -211,14 +211,11 @@ const MyProducts = () => {
                             <div className="form-group mt-4">
                                 <select className="form-select" name='location' required>
                                     <option value="">Location</option>
-                                    <option>Barisal</option>
-                                    <option>Chattagram</option>
-                                    <option>Dhaka</option>
-                                    <option>Khulna</option>
-                                    <option>Rajshahi</option>
-                                    <option>Rangpur</option>
-                                    <option>Sylhet</option>
-                                    <option>Mymensingh</option>
+                                    {
+                                        adlocation.map((s, i) => {
+                                            return <option key={i}>{s}</option>
+                                        })
+                                    }
                                 </select>
                             </div>
                             <div className="form-group my-4">

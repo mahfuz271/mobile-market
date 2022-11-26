@@ -67,10 +67,10 @@ const UserContext = ({ children }) => {
         return () => unSubscribe();
 
     }, [])
-
+    let adlocation = ['Barisal', 'Chattagram', 'Dhaka', 'Khulna', 'Rajshahi', 'Rangpur', 'Sylhet', 'Mymensingh'];
     let role = localStorage.getItem('role') || null;
 
-    const authInfo = { brands, role, user, loading, setLoading, createUser, updateUser, signIn, logOut, signInWithGoogle, signInWithGithub }
+    const authInfo = { adlocation, brands, role, user, loading, setLoading, createUser, updateUser, signIn, logOut, signInWithGoogle, signInWithGithub }
 
     return (
         <AuthContext.Provider value={authInfo}>

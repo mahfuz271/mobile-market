@@ -75,16 +75,52 @@ footer * {
     color: #91929A !important;
 }
 
-.prices {
-    right: 10px;
-    top: 10px;
-    color: white;
-    border-radius: 5px;
-    padding: 5px;
-    background-color: #33333D !important;
+.main-heading {
+    background: url(../public/img/sep.png) no-repeat bottom;
+    margin: 0 0 70px 0;
 }
 
-.services {
+.main-heading h2 {
+    font-weight: 700;
+    color: #3f3d59;
+    padding: 0 0 18px 0;
+    font-size: 32px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    word-wrap: break-word;
+}
+
+
+.locations a {
+    color: #888;
+    display: block;
+    font-size: 14px;
+    font-weight: normal;
+    padding: 10px 0;
+}
+
+.locations a i {
+    margin-right: 10px;
+}
+
+.locations a:hover,
+.locations a:hover i {
+    color: #a0ce4e;
+    text-decoration: none;
+}
+
+.outline {
+    border: 1px solid #e1e1e1;
+    border-bottom: 3px solid #e1e1e1;
+    padding: 30px;
+}
+
+.brands {
+    height: 100%;
+    border: 2px solid #8a3239;
+}
+
+.products {
     height: 100%;
     border: 2px solid #BBF0FF80;
 }

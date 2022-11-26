@@ -11,6 +11,7 @@ import DashboardLayout from "../Layout/DashboardLayout";
 import Dashboard from "../Components/Pages/Dashboard";
 import MyProducts from "../Components/Pages/MyProducts";
 import Users from "../Components/Pages/Users";
+import Products from "../Components/Pages/Products";
 
 const Router = createBrowserRouter([
     {
@@ -21,8 +22,8 @@ const Router = createBrowserRouter([
             {
                 path: "/",
                 element: <Homepage />,
-                lcoader: () => {
-                    return fetch(`${process.env.REACT_APP_SERVER_URL}/services?limit=3`);
+                loader: () => {
+                    return fetch(`${process.env.REACT_APP_SERVER_URL}/products?limit=4`);
                 }
             },
             {
@@ -40,6 +41,14 @@ const Router = createBrowserRouter([
             {
                 path: "/signup",
                 element: <Signup />
+            },
+            {
+                path: "/category/:txt",
+                element: <Products query='brand' />
+            },
+            {
+                path: "/location/:txt",
+                element: <Products query='location' />
             },
         ]
     },
