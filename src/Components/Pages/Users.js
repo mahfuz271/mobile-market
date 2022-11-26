@@ -70,10 +70,10 @@ const Users = () => {
 
     const handleStatusChange = id => {
         const current = users.find(odr => odr._id === id);
-        let data = { _id: id, status: (current?.status == 'Verified' ? 'Verified' : 'Unverified') };
+        let status = (current.status && current.status == 'Verified' ? 'Unverified' : 'Verified');
+        let data = { _id: id, status };
 
-        setLoading(true);
-        fetch(process.env.REACT_APP_SERVER_URL + `/userVerify`, {
+        fetch(process.env.REACT_APP_SERVER_URL + `/userVerify?email=${user.email}`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -83,7 +83,6 @@ const Users = () => {
         })
             .then(res => {
                 if (res.status === 401 || res.status === 403) {
-                    setLoading(false);
                     return logOut();
                 }
                 return res.json();
@@ -114,7 +113,7 @@ const Users = () => {
                                     <td className='text-start'>{s.name}</td>
                                     <td className='text-start'>{s.email}</td>
                                     <th>
-                                        <button type='button' onClick={() => handleStatusChange(s._id)} className='btn btn-primary mx-2'>{s?.status}</button>
+                                        {s.role == 'seller' && <button type='button' onClick={() => handleStatusChange(s._id)} className='btn btn-primary mx-2'>{s?.status}</button>}
                                         <button onClick={() => handleDelete(s._id)} className='btn btn-danger'>X</button>
                                     </th>
                                 </tr>
