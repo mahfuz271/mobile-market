@@ -4,13 +4,15 @@ const useToken = email => {
     const [token, setToken] = useState('');
     useEffect(() => {
         if (email) {
-            fetch(`${process.env.REACT_APP_SERVER_URL}/jwt?email=${email}`)
+            fetch(`${process.env.REACT_APP_SERVER_URL}/jwt?email=${email}`, {
+                method: 'POST'
+            })
                 .then(res => res.json())
                 .then(data => {
-                    if (data.accessToken) {
-                        localStorage.setItem('accessToken', data.accessToken);
+                    if (data.token) {
+                        localStorage.setItem('accessToken', data.token);
                         localStorage.setItem('role', data.role);
-                        setToken(data.accessToken);
+                        setToken(data.token);
                     }
                 });
         }

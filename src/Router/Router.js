@@ -16,7 +16,7 @@ const Router = createBrowserRouter([
             {
                 path: "/",
                 element: <Homepage />,
-                loader: () => {
+                lcoader: () => {
                     return fetch(`${process.env.REACT_APP_SERVER_URL}/services?limit=3`);
                 }
             },
