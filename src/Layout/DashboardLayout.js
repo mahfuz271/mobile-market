@@ -32,12 +32,12 @@ const DashboardLayout = () => {
                                     </Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/dashboard/allbuyers">
+                                    <Link className="nav-link" to="/dashboard/users?buyer=true">
                                         All Buyers
                                     </Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/dashboard/allsellers">
+                                    <Link className="nav-link" to="/dashboard/users">
                                         All Sellers
                                     </Link>
                                 </li>

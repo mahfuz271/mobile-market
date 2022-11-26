@@ -10,6 +10,7 @@ import Logout from "../Components/Logout/Logout";
 import DashboardLayout from "../Layout/DashboardLayout";
 import Dashboard from "../Components/Pages/Dashboard";
 import MyProducts from "../Components/Pages/MyProducts";
+import Users from "../Components/Pages/Users";
 
 const Router = createBrowserRouter([
     {
@@ -54,6 +55,10 @@ const Router = createBrowserRouter([
             {
                 path: "/dashboard/myproducts",
                 element: <MyProducts />
+            },
+            {
+                path: "/dashboard/users",
+                element: <Users />
             },
         ]
     },
