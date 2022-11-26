@@ -71,11 +71,12 @@ const Users = () => {
     return (<div className='my-5 text-center'>
         {users.length > 0 ?
             <div className="overflow-x-auto w-full row">
-                <h2 className='mb-5'>You have {users.length} users</h2>
+                <h2 className='mb-5'>You have {users.length} {userRole}</h2>
                 <table className="table w-full">
                     <thead>
                         <tr>
                             <th className='text-start'>Name</th>
+                            <th className='text-start'>Email</th>
                             <th>
                             </th>
                         </tr>
@@ -85,7 +86,8 @@ const Users = () => {
                         {
                             users.map(s => {
                                 return <tr key={s._id}>
-                                    <td className='text-start'>{s.displayName}</td>
+                                    <td className='text-start'>{s.name}</td>
+                                    <td className='text-start'>{s.email}</td>
                                     <th>
                                         <button onClick={() => handleDelete(s._id)} className='btn btn-danger'>X</button>
                                     </th>
