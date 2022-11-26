@@ -68,6 +68,31 @@ const Users = () => {
         }
     }
 
+    const handleStatusChange = id => {
+        const current = users.find(odr => odr._id === id);
+        let data = { _id: id, status: (current?.status == 'Verified' ? 'Verified' : 'Unverified') };
+
+        setLoading(true);
+        fetch(process.env.REACT_APP_SERVER_URL + `/userVerify`, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+                authorization: `Bearer ${localStorage.getItem('accessToken')}`
+            },
+            body: JSON.stringify(data)
+        })
+            .then(res => {
+                if (res.status === 401 || res.status === 403) {
+                    setLoading(false);
+                    return logOut();
+                }
+                return res.json();
+            })
+            .then(data => {
+                toast('successfully saved');
+                reloadUsers();
+            })
+    }
     return (<div className='my-5 text-center'>
         {users.length > 0 ?
             <div className="overflow-x-auto w-full row">
@@ -89,6 +114,7 @@ const Users = () => {
                                     <td className='text-start'>{s.name}</td>
                                     <td className='text-start'>{s.email}</td>
                                     <th>
+                                        <button type='button' onClick={() => handleStatusChange(s._id)} className='btn btn-primary mx-2'>{s?.status}</button>
                                         <button onClick={() => handleDelete(s._id)} className='btn btn-danger'>X</button>
                                     </th>
                                 </tr>

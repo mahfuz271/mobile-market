@@ -45,7 +45,7 @@ const Products = ({ query }) => {
                     })}
                 </div></>
                 :
-                <p className='text-center'>No products found</p>
+                <p className='text-center'>No product found</p>
             }
         </div>
     );

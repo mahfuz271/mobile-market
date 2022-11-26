@@ -61,7 +61,7 @@ const Homepage = () => {
                 <div className="row mt-5">
                     <div className="col-sm-12">
                         <div className="main-heading text-center">
-                            <h2>Location</h2>
+                            <h2>Locations</h2>
                         </div>
                     </div>
                 </div><div className="row">
