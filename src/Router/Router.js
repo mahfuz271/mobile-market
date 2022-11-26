@@ -5,7 +5,6 @@ import Blog from "../Components/Blog/Blog";
 import Main from "../Layout/Main";
 import Login from "../Components/Login/Login";
 import Signup from "../Components/Signup/Signup";
-import PublicRoute from "./PublicRoute";
 import PrivateRoute from "./PrivateRoute";
 import Logout from "../Components/Logout/Logout";
 
@@ -27,7 +26,7 @@ const Router = createBrowserRouter([
             },
             {
                 path: "/login",
-                element: <PublicRoute><Login /></PublicRoute>
+                element: <Login />
             },
             {
                 path: "/logout",
@@ -35,7 +34,7 @@ const Router = createBrowserRouter([
             },
             {
                 path: "/signup",
-                element: <PublicRoute><Signup /></PublicRoute>
+                element: <Signup />
             },
 
 

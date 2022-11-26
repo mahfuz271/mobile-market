@@ -15,13 +15,33 @@ const Signup = () => {
 
     if (token) {
         setLoading(false);
-        toast("Signup success!")
         navigate('/');
     }
 
-    const jwt = (result) => {
+
+    const jwt = (result, role = 'buyer') => {
         setLoginUserEmail(result.user.email);
+        let currentUser = {
+            email: result.user.email,
+            name: result.user.displayName,
+            role
+        }
+        fetch(process.env.REACT_APP_SERVER_URL + '/users', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(currentUser)
+        })
+            .then(res => res.json())
+            .then(data => {
+                setLoading(false);
+                toast("Signup success!")
+                navigate('/');
+            });
+
     }
+
 
     const handleGoogleSignIn = (event) => {
         signInWithGoogle().then(jwt)
@@ -40,6 +60,7 @@ const Signup = () => {
         const name = form.name.value;
         const photoURL = form.photoURL.value;
         const password = form.password.value;
+        const account_type = form.account_type.value;
 
         setError(null);
 
@@ -67,16 +88,21 @@ const Signup = () => {
             return;
         }
 
+        if (account_type.length < 1) {
+            setError('Select role.');
+            setLoading(false);
+            return;
+        }
 
         createUser(email, password)
             .then(result => {
                 updateUser(name, photoURL).then(() => {
                     form.reset();
-                    jwt(result);
+                    jwt(result, account_type);
                 })
-                    .catch(error => { setError(error.message); setLoading(false); });
+                    .catch(error => { toast(error.message); setLoading(false); });
             })
-            .catch(error => { setError(error.message); setLoading(false); });
+            .catch(error => { toast(error.message); setLoading(false); });
 
     }
 
@@ -105,6 +131,11 @@ const Signup = () => {
                     <div className="password-wrap position-relative">
                         <input className="form-control pe-5" id="inputphotoURL" name="photoURL" type="text" placeholder="Enter photoURL" required="" />
                     </div>
+                </div>
+                <div className="form-group mt-4">
+                    <label className="form-label text-primary d-flex">Account type</label>
+                    <input type="radio" required="" id="user_A" name="account_type" value="seller" /> <label htmlFor="user_A">Seller</label>
+                    <input type="radio" className='ms-5' required="" id="user_D" name="account_type" value="buyer" /> <label htmlFor="user_D">Buyer</label>
                 </div>
                 <button className="btn btn-primary w-100 mt-5 submit-btn" type="submit" disabled={loading}>Start now !</button>
                 <div className="text-center my-4"><span className="mx-3 span-or text-secondary">OR</span></div>

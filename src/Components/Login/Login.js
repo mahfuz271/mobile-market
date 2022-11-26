@@ -11,18 +11,38 @@ const Login = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [error, setError] = useState(null);
+    const [role, serRole] = useState('buyer');
     const [loginUserEmail, setLoginUserEmail] = useState('');
     const [token] = useToken(loginUserEmail);
     const from = location.state?.from?.pathname || '/';
-    
+
     if (token) {
         setLoading(false);
         toast("Login success!")
         navigate(from, { replace: true });
     }
-    
+
     const jwt = (result) => {
         setLoginUserEmail(result.user.email);
+        let currentUser = {
+            email: result.user.email,
+            name: result.user.displayName,
+            role
+        }
+        fetch(process.env.REACT_APP_SERVER_URL + '/users', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(currentUser)
+        })
+            .then(res => res.json())
+            .then(data => {
+                setLoading(false);
+                toast("Login success!")
+                navigate(from, { replace: true });
+            });
+
     }
 
 
@@ -58,7 +78,10 @@ const Login = () => {
         signIn(email, password)
             .then(result => {
                 form.reset();
-                jwt(result);
+                setLoginUserEmail(result.user.email);
+                setLoading(false);
+                toast("Login success!")
+                navigate(from, { replace: true });
             })
             .catch(error => { toast(error.message); setLoading(false); });
     }
