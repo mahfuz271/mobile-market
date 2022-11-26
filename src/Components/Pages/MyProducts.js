@@ -75,22 +75,18 @@ const MyProducts = () => {
         form._id.value = id;
         for (let k in current) {
             let inp = form.querySelector("[name='" + k + "']");
-            if(inp){
+            if (inp) {
                 inp.value = current[k] || '';
             }
 
         }
     }
-
-    const handleSubmit = event => {
-        event.preventDefault();
-        const form = event.target;
-
-        let data = new FormData(form);
+    const updateDetails = (data, form = false) => {
         data.append('email', user.email);
         let product = Object.fromEntries(data);
+        let status = form == false;
 
-        setLoading(true);
+        setLoading(!status);
         fetch(process.env.REACT_APP_SERVER_URL + `/myproducts`, {
             method: 'POST',
             headers: {
@@ -108,13 +104,29 @@ const MyProducts = () => {
             })
             .then(data => {
                 toast('successfully saved');
-                setSearchParams("");
-                form.reset();
-                setLoading(false);
-                document.querySelector('#modalCloseBs')?.click();
-                document.querySelector(".modal-backdrop")?.remove("show");
-                document.body.classList.remove("modal-open");
+                if (!status) {
+                    setSearchParams("");
+                    form.reset();
+                    setLoading(false);
+                    document.querySelector('#modalCloseBs')?.click();
+                    document.querySelector(".modal-backdrop")?.remove("show");
+                    document.body.classList.remove("modal-open");
+                }else{
+                    reloadProducts();
+                }
             })
+    }
+    const handleSubmit = event => {
+        event.preventDefault();
+        let data = new FormData(event.target);
+        updateDetails(data, event.target);
+    }
+    const handleStatusChange = id => {
+        const current = products.find(odr => odr._id === id);
+        let data = new FormData();
+        data.append('_id', id);
+        data.append('status', (current.status == 'Unsold' ? 'Sold' : 'Unsold'));
+        updateDetails(data);
     }
     return (
         <div className='my-5 text-center'>
@@ -125,11 +137,12 @@ const MyProducts = () => {
                     <table className="table w-full">
                         <thead>
                             <tr>
+                                <th className='text-start'>Title</th>
+                                <th>Price</th>
+                                <th>Date</th>
+                                <th>Status</th>
                                 <th>
                                 </th>
-                                <th className='text-start'>Title</th>
-                                <th>Date</th>
-                                <th>Service</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -137,13 +150,17 @@ const MyProducts = () => {
                             {
                                 products.map(s => {
                                     return <tr key={s._id}>
-                                        <th>
-                                            <button onClick={() => handleDelete(s._id)} className='btn btn-danger'>X</button>
-                                            <button data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => handleModify(s._id)} className='btn btn-info ms-2'><i className="fa fa-edit"></i></button>
-                                        </th>
                                         <td className='text-start'>{s.title}</td>
+                                        <td className='text-start'>{s.price}</td>
                                         <td>{s?.created}</td>
-                                        <td><Link to={`/product/${s._id}`}>View</Link></td>
+                                        <td>
+                                            <button type='button' onClick={() => handleStatusChange(s._id)} className='btn btn-primary mx-2'>{s?.status}</button>
+                                        </td>
+                                        <th>
+                                            <Link className='btn btn-info me-2' to={`/product/${s._id}`}>View</Link>
+                                            <button data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => handleModify(s._id)} className='btn btn-info mx-2'><i className="fa fa-edit"></i></button>
+                                            <button onClick={() => handleDelete(s._id)} className='btn btn-danger'>X</button>
+                                        </th>
                                     </tr>
                                 })
                             }
@@ -210,6 +227,13 @@ const MyProducts = () => {
                                     <option value="Excellent">Excellent</option>
                                     <option value="Good">Good</option>
                                     <option value="Fair">Fair</option>
+                                </select>
+                            </div>
+                            <div className="form-group my-4">
+                                <select className="form-select" name='status' required>
+                                    <option value="">Status</option>
+                                    <option>Unsold</option>
+                                    <option>Sold</option>
                                 </select>
                             </div>
                             <div className="modal-footer">
