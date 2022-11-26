@@ -3,53 +3,44 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Contexts/UserContext';
 import { toast } from 'react-toastify';
 import useDocumentTitle from '../../Layout/useDocumentTitle';
-import useToken from '../../hooks/useToken';
+import useLogin from '../../hooks/useLogin';
 
 const Signup = () => {
     useDocumentTitle("Signup");
     const navigate = useNavigate();
     const [error, setError] = useState(null);
     const { createUser, updateUser, loading, setLoading, signInWithGoogle, signInWithGithub } = useContext(AuthContext);
-    const [loginUserEmail, setLoginUserEmail] = useState('');
-    const [token] = useToken(loginUserEmail);
+    const [LoginInfo, setLoginInfo] = useState({
+        email: null,
+        name: null,
+        role: null,
+        insert: false
+    });
+    const [token] = useLogin(LoginInfo);
 
-    if (token) {
-        setLoading(false);
-        navigate('/');
-    }
 
-
-    const jwt = (result, role = 'buyer') => {
-        setLoginUserEmail(result.user.email);
-        let currentUser = {
+    const jwtANDUsers = (result, role = 'buyer') => {
+        setLoading(true);
+        setLoginInfo({
             email: result.user.email,
             name: result.user.displayName,
-            role
-        }
-        fetch(process.env.REACT_APP_SERVER_URL + '/users', {
-            method: 'POST',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify(currentUser)
-        })
-            .then(res => res.json())
-            .then(data => {
-                setLoading(false);
-                toast("Signup success!")
-                navigate('/');
-            });
-
+            role,
+            insert: true
+        }); setTimeout(() => {
+            toast("Signup success!");
+            setLoading(false);
+            navigate('/');
+        }, 1000);
     }
 
 
     const handleGoogleSignIn = (event) => {
-        signInWithGoogle().then(jwt)
+        signInWithGoogle().then(jwtANDUsers)
             .catch(error => { toast(error.message); setLoading(false); });
     }
 
     const handleGithubSignIn = (event) => {
-        signInWithGithub().then(jwt)
+        signInWithGithub().then(jwtANDUsers)
             .catch(error => { toast(error.message); setLoading(false); });
     }
 
@@ -98,7 +89,7 @@ const Signup = () => {
             .then(result => {
                 updateUser(name, photoURL).then(() => {
                     form.reset();
-                    jwt(result, account_type);
+                    jwtANDUsers(result, account_type);
                 })
                     .catch(error => { toast(error.message); setLoading(false); });
             })

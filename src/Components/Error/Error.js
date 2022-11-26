@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const Error = () => {
     return (
-        <div className='text-center'>
+        <div className='text-center my-5'>
             <h1>
                 Oops!</h1>
             <h2>

@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Contexts/UserContext';
 import { toast } from 'react-toastify';
 import useDocumentTitle from '../../Layout/useDocumentTitle';
-import useToken from '../../hooks/useToken';
+import useLogin from '../../hooks/useLogin';
 
 const Login = () => {
     useDocumentTitle("Login");
@@ -11,37 +11,28 @@ const Login = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [error, setError] = useState(null);
-    const [role, serRole] = useState('buyer');
-    const [loginUserEmail, setLoginUserEmail] = useState('');
-    const [token] = useToken(loginUserEmail);
+    const [role, setRole] = useState('buyer');
+    const [LoginInfo, setLoginInfo] = useState({
+        email: null,
+        name: null,
+        role,
+        insert: false
+    });
+    const [token] = useLogin(LoginInfo);
     const from = location.state?.from?.pathname || '/';
 
-    if (token) {
-        setLoading(false);
-        toast("Login success!")
-        navigate(from, { replace: true });
-    }
-
-    const jwt = (result) => {
-        setLoginUserEmail(result.user.email);
-        let currentUser = {
+    const jwt = (result, insert = true) => {
+        setLoading(true);
+        setLoginInfo({
             email: result.user.email,
             name: result.user.displayName,
-            role
-        }
-        fetch(process.env.REACT_APP_SERVER_URL + '/users', {
-            method: 'POST',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify(currentUser)
-        })
-            .then(res => res.json())
-            .then(data => {
-                setLoading(false);
-                toast("Login success!")
-                navigate(from, { replace: true });
-            });
+            role,
+            insert
+        }); setTimeout(() => {
+            toast("Login success!");
+            setLoading(false);
+            navigate(from, { replace: true });
+        }, 1000);
 
     }
 
@@ -77,11 +68,8 @@ const Login = () => {
 
         signIn(email, password)
             .then(result => {
+                jwt(result, false);
                 form.reset();
-                setLoginUserEmail(result.user.email);
-                setLoading(false);
-                toast("Login success!")
-                navigate(from, { replace: true });
             })
             .catch(error => { toast(error.message); setLoading(false); });
     }

@@ -8,6 +8,7 @@ const auth = getAuth(FirebaseApp);
 const UserContext = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [brands, setBrands] = useState([]);
 
     const createUser = (email, password) => {
         setLoading(true);
@@ -43,6 +44,19 @@ const UserContext = ({ children }) => {
         return signOut(auth);
     }
 
+    const getData = () => {
+        fetch('brands.json')
+            .then(function (r) {
+                return r.json();
+            })
+            .then(function (d) {
+                setBrands(d)
+            });
+    }
+
+    useEffect(() => {
+        getData()
+    }, [])
 
     useEffect(() => {
         const unSubscribe = onAuthStateChanged(auth, currentUser => {
@@ -56,7 +70,7 @@ const UserContext = ({ children }) => {
 
     let role = localStorage.getItem('role') || null;
 
-    const authInfo = { role, user, loading, setLoading, createUser, updateUser, signIn, logOut, signInWithGoogle, signInWithGithub }
+    const authInfo = { brands, role, user, loading, setLoading, createUser, updateUser, signIn, logOut, signInWithGoogle, signInWithGithub }
 
     return (
         <AuthContext.Provider value={authInfo}>
