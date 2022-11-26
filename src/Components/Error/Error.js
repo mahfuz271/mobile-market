@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 const Error = () => {
     return (
         <div className='text-center my-5'>
+            <img src="/img/error.png" alt="" width={100} />
             <h1>
                 Oops!</h1>
             <h2>

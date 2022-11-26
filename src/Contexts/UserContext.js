@@ -45,7 +45,7 @@ const UserContext = ({ children }) => {
     }
 
     const getData = () => {
-        fetch('brands.json')
+        fetch('/brands.json')
             .then(function (r) {
                 return r.json();
             })

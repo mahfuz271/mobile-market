@@ -7,11 +7,15 @@ import Login from "../Components/Login/Login";
 import Signup from "../Components/Signup/Signup";
 import PrivateRoute from "./PrivateRoute";
 import Logout from "../Components/Logout/Logout";
+import DashboardLayout from "../Layout/DashboardLayout";
+import Dashboard from "../Components/Pages/Dashboard";
+import MyProducts from "../Components/Pages/MyProducts";
 
 const Router = createBrowserRouter([
     {
         path: '/',
         element: <Main />,
+        errorElement: <Error></Error>,
         children: [
             {
                 path: "/",
@@ -36,13 +40,27 @@ const Router = createBrowserRouter([
                 path: "/signup",
                 element: <Signup />
             },
-
-
-            {
-                path: '*',
-                element: <Error />
-            }
         ]
+    },
+    {
+        path: '/dashboard',
+        element: <PrivateRoute><DashboardLayout></DashboardLayout></PrivateRoute>,
+        errorElement: <Error></Error>,
+        children: [
+            {
+                path: '/dashboard',
+                element: <Dashboard />
+            },
+            {
+                path: "/dashboard/myproducts",
+                element: <MyProducts />
+            },
+        ]
+    },
+
+    {
+        path: '*',
+        element: <Error />
     }
 ]);
 
