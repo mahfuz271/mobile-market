@@ -54,7 +54,9 @@ const UserContext = ({ children }) => {
 
     }, [])
 
-    const authInfo = { user, loading, setLoading, createUser, updateUser, signIn, logOut, signInWithGoogle, signInWithGithub }
+    let role = localStorage.getItem('role') || null;
+
+    const authInfo = { role, user, loading, setLoading, createUser, updateUser, signIn, logOut, signInWithGoogle, signInWithGithub }
 
     return (
         <AuthContext.Provider value={authInfo}>

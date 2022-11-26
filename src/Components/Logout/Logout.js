@@ -7,7 +7,10 @@ const Logout = () => {
     const navigate = useNavigate();
     const { logOut, setLoading } = useContext(AuthContext);
     logOut().then(() => {
-        navigate(-1);
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('role');
+        setLoading(false);
+        navigate('/');
     }).catch(error => { toast(error.message); setLoading(false); });
 };
 
