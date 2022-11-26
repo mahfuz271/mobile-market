@@ -3,28 +3,33 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Contexts/UserContext';
 import { toast } from 'react-toastify';
 import useDocumentTitle from '../../Layout/useDocumentTitle';
+import useToken from '../../hooks/useToken';
 
 const Signup = () => {
     useDocumentTitle("Signup");
     const navigate = useNavigate();
     const [error, setError] = useState(null);
     const { createUser, updateUser, loading, setLoading, signInWithGoogle, signInWithGithub } = useContext(AuthContext);
+    const [loginUserEmail, setLoginUserEmail] = useState('');
+    const [token] = useToken(loginUserEmail);
+
+    if (token) {
+        setLoading(false);
+        toast("Signup success!")
+        navigate('/');
+    }
+
+    const jwt = (result) => {
+        setLoginUserEmail(result.user.email);
+    }
 
     const handleGoogleSignIn = (event) => {
-        signInWithGoogle().then(() => {
-            setLoading(false);
-            toast("Login success!")
-            navigate('/');
-        })
+        signInWithGoogle().then(jwt)
             .catch(error => { toast(error.message); setLoading(false); });
     }
 
     const handleGithubSignIn = (event) => {
-        signInWithGithub().then(() => {
-            setLoading(false);
-            toast("Login success!")
-            navigate('/');
-        })
+        signInWithGithub().then(jwt)
             .catch(error => { toast(error.message); setLoading(false); });
     }
 
@@ -67,9 +72,7 @@ const Signup = () => {
             .then(result => {
                 updateUser(name, photoURL).then(() => {
                     form.reset();
-                    setLoading(false);
-                    toast("Signup success!")
-                    navigate("/login");
+                    jwt(result);
                 })
                     .catch(error => { setError(error.message); setLoading(false); });
             })

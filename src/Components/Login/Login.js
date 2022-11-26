@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Contexts/UserContext';
 import { toast } from 'react-toastify';
 import useDocumentTitle from '../../Layout/useDocumentTitle';
+import useToken from '../../hooks/useToken';
 
 const Login = () => {
     useDocumentTitle("Login");
@@ -10,31 +11,18 @@ const Login = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [error, setError] = useState(null);
+    const [loginUserEmail, setLoginUserEmail] = useState('');
+    const [token] = useToken(loginUserEmail);
     const from = location.state?.from?.pathname || '/';
     
+    if (token) {
+        setLoading(false);
+        toast("Login success!")
+        navigate(from, { replace: true });
+    }
+    
     const jwt = (result) => {
-        const user = result.user;
-
-        const currentUser = {
-            email: user.email
-        }
-
-        // get jwt token
-        fetch(process.env.REACT_APP_SERVER_URL + '/jwt', {
-            method: 'POST',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify(currentUser)
-        })
-            .then(res => res.json())
-            .then(data => {
-                // local storage is the easiest but not the best place to store jwt token
-                localStorage.setItem('logged-token', data.token);
-                setLoading(false);
-                toast("Login success!")
-                navigate(from, { replace: true });
-            });
+        setLoginUserEmail(result.user.email);
     }
 
 
