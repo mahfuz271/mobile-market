@@ -11,6 +11,38 @@ const Homepage = () => {
     return (
         <div className='container-fluid'>
             {products.length > 0 && <>
+                <div id="myCarousel" className="carousel slide">
+                    <div className="carousel-inner">
+                        <div className="carousel-item active pt-5">
+                            <div className="mask flex-center">
+                                <div className="container">
+                                    <div className="row align-items-center">
+                                        <div className="col-md-7 col-12 order-md-1 order-2">
+                                            <h4>{products[0].title}</h4>
+                                            <p className='desc'>
+                                                {products[0].description.slice(0, 150)}
+                                            </p>
+                                            <div className='price'>
+                                                <span className="act-price">${products[0].resale}
+                                                </span>
+                                                <div className="ms-2 d-inline">
+                                                    <small className="dis-price">${products[0].price}</small>
+                                                </div>
+                                            </div>
+                                            <Link to={`/advertisement/${products[0]._id}?booknow=true`}>Book Now</Link>
+                                        </div>
+                                        <div className="col-md-5 col-12 order-md-2 order-1">
+                                            <img src={`${products[0].img}`} className="mx-auto" alt="" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </>
+            }
+            {products.length > 1 && <>
                 <div className="row mt-5">
                     <div className="col-sm-12">
                         <div className="main-heading text-center">
@@ -19,7 +51,7 @@ const Homepage = () => {
                     </div>
                 </div>
                 <div className="row row-cols-1 row-cols-lg-4 row-cols-md-2 mx-0 gy-5">
-                    {products.map(c => <ProductLoop key={c._id} product={c}></ProductLoop>)}
+                    {products.filter((v, i) => { return i != 0 }).map(c => <ProductLoop key={c._id} product={c}></ProductLoop>)}
                 </div></>
             }
             {brands.length > 0 && <>
