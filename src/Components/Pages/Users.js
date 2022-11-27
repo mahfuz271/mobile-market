@@ -2,34 +2,36 @@ import React, { useEffect, useState, useContext } from 'react';
 import { AuthContext } from '../../Contexts/UserContext';
 import { toast } from 'react-toastify';
 import useDocumentTitle from '../../Layout/useDocumentTitle';
-import { Link, useSearchParams, useLocation } from 'react-router-dom';
+import { useSearchParams, useLocation } from 'react-router-dom';
+import axios from 'axios';
 
 const Users = () => {
     let [searchParams, setSearchParams] = useSearchParams();
     let location = useLocation()
 
     useDocumentTitle("Manage Users");
-    const { user, logOut, setLoading, loading, brands } = useContext(AuthContext);
+    const { user, logOut } = useContext(AuthContext);
 
     const [users, setUsers] = useState([])
     const [userRole, setUserRole] = useState(null)
 
     const reloadUsers = () => {
         if (userRole) {
-            fetch(process.env.REACT_APP_SERVER_URL + `/users?role=${userRole}`, {
+            const options = {
+                method: 'GET',
+                url: process.env.REACT_APP_SERVER_URL + `/users?role=${userRole}`,
                 headers: {
                     authorization: `Bearer ${localStorage.getItem('accessToken')}`
                 }
-            })
+            }
+            axios(options)
                 .then(res => {
                     if (res.status === 401 || res.status === 403) {
                         return logOut();
+                    } else {
+                        setUsers(res.data);
                     }
-                    return res.json();
-                })
-                .then(data => {
-                    setUsers(data);
-                })
+                });
         }
     }
 

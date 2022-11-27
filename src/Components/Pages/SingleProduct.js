@@ -4,41 +4,39 @@ import useDocumentTitle from '../../Layout/useDocumentTitle';
 import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import Moment from 'react-moment';
 import { toast } from 'react-toastify';
+import { useQuery } from '@tanstack/react-query'
 
 const SingleProduct = () => {
     let [searchParams, setSearchParams] = useSearchParams();
     let location = useLocation()
     const { id } = useParams();
-    const [product, setProduct] = useState(false)
     const [loadingSave, setloadingSave] = useState(false)
     const { user, logOut, role, modal_close } = useContext(AuthContext);
 
-    const reloadProduct = () => {
-        fetch(`${process.env.REACT_APP_SERVER_URL}/products/${id}`, {
+    const reloadProduct = async () => {
+        return await fetch(`${process.env.REACT_APP_SERVER_URL}/products/${id}`, {
             headers: {
                 authorization: `Bearer ${localStorage.getItem('accessToken')}`
             }
+        }).then(res => {
+            if (res.status === 401 || res.status === 403) {
+                return logOut();
+            }
+            return res.json();
         })
-            .then(res => {
-                if (res.status === 401 || res.status === 403) {
-                    return logOut();
-                }
-                return res.json();
-            })
-            .then(data => {
-                setProduct(data);
-            });
 
     }
-    useDocumentTitle(product?.title);
+    
+    const { data: product = false, refetch } = useQuery({ queryKey: ['product'], queryFn: reloadProduct })
 
-    useEffect(reloadProduct, []);
+    useDocumentTitle(product?.title);
 
     useEffect(() => {
         if (searchParams.get("booknow") && role == 'buyer') {
             document.querySelector('.book_now')?.click();
         }
     }, [location, product, role])
+
     const handleStatusChange = (id, task) => {
         let data = { task, pid: id, title: product.title };
 
@@ -59,7 +57,7 @@ const SingleProduct = () => {
             .then(data => {
                 toast('successfully ' + task);
                 setSearchParams("");
-                reloadProduct();
+                refetch();
             })
     }
     const handleSubmit = event => {
@@ -90,7 +88,7 @@ const SingleProduct = () => {
                 modal_close();
                 setloadingSave(false);
                 setSearchParams("");
-                reloadProduct();
+                refetch();
             })
     }
     return (

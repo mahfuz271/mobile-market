@@ -1,24 +1,19 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { AuthContext } from '../../Contexts/UserContext';
-import { Link, useParams } from 'react-router-dom';
-import Moment from 'react-moment';
+import React from 'react';
+import { useParams } from 'react-router-dom';
 import ProductLoop from './ProductLoop';
+import { useQuery } from '@tanstack/react-query'
 
 const Products = ({ query }) => {
     const { txt } = useParams();
-    const [products, setProducts] = useState([])
 
-    const reloadProducts = () => {
-        fetch(process.env.REACT_APP_SERVER_URL + `/products?${query}=${txt}`)
+    const reloadProducts = async () => {
+        return await fetch(process.env.REACT_APP_SERVER_URL + `/products?${query}=${txt}`)
             .then(res => {
                 return res.json();
-            })
-            .then(data => {
-                setProducts(data);
-            })
+            });
     }
+    const { data:products = [] } = useQuery({ queryKey: ['products'], queryFn: reloadProducts });
 
-    useEffect(reloadProducts, []);
 
     return (
         <div className='container'>
