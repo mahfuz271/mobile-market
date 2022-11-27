@@ -11,7 +11,7 @@ const SingleProduct = () => {
     const { id } = useParams();
     const [product, setProduct] = useState(false)
     const [loadingSave, setloadingSave] = useState(false)
-    const { user, logOut, role } = useContext(AuthContext);
+    const { user, logOut, role, modal_close } = useContext(AuthContext);
 
     const reloadProduct = () => {
         fetch(`${process.env.REACT_APP_SERVER_URL}/products/${id}`, {
@@ -58,6 +58,7 @@ const SingleProduct = () => {
             })
             .then(data => {
                 toast('successfully ' + task);
+                setSearchParams("");
                 reloadProduct();
             })
     }
@@ -86,11 +87,10 @@ const SingleProduct = () => {
             .then(data => {
                 toast('successfully booked');
                 event.target.reset();
-                reloadProduct();
-                document.querySelector('#updateform .btn-close')?.click();
-                document.querySelector(".modal-backdrop")?.remove("show");
-                document.body.classList.remove("modal-open");
+                modal_close();
                 setloadingSave(false);
+                setSearchParams("");
+                reloadProduct();
             })
     }
     return (

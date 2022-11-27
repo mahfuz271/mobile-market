@@ -213,6 +213,17 @@ footer * {
     padding: 15px;
 }
 
+.modal-backdrop {
+    display: none;
+    visibility: hidden;
+    position: relative
+}
+
+.modal {
+    background: url(../public/img/BlackTransparentBackground.png);
+    z-index: 1100;
+}
+
 @media screen and (max-width:768px) {
     .image_selected {
         height: auto;

@@ -10,7 +10,7 @@ const MyProducts = () => {
     const imgHostKey = process.env.REACT_APP_imgbb_key;
 
     useDocumentTitle("Manage My Products");
-    const { adlocation, user, logOut, setLoading, loading, brands } = useContext(AuthContext);
+    const { adlocation, user, logOut, setLoading, loading, brands, modal_close } = useContext(AuthContext);
 
     const [products, setProducts] = useState([])
 
@@ -40,6 +40,8 @@ const MyProducts = () => {
             form.querySelector(".modal-title").innerHTML = "Add Product";
             form.reset();
             form._id.value = 'new';
+        }else{
+            modal_close();
         }
     }, [location])
 
@@ -104,9 +106,7 @@ const MyProducts = () => {
                     setSearchParams("");
                     form.reset();
                     setLoading(false);
-                    document.querySelector('#modalCloseBs')?.click();
-                    document.querySelector(".modal-backdrop")?.remove("show");
-                    document.body.classList.remove("modal-open");
+                    modal_close();
                 } else {
                     reloadProducts();
                 }

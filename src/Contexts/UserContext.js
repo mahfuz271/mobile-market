@@ -44,6 +44,11 @@ const UserContext = ({ children }) => {
         return signOut(auth);
     }
 
+    const modal_close = () => {
+        document.querySelector('.btn-close')?.click();
+        document.querySelector(".modal-backdrop")?.remove("show");
+        document.body.classList.remove("modal-open");
+    }
     const getData = () => {
         fetch('/brands.json')
             .then(function (r) {
@@ -70,7 +75,7 @@ const UserContext = ({ children }) => {
     let adlocation = ['Barisal', 'Chattagram', 'Dhaka', 'Khulna', 'Rajshahi', 'Rangpur', 'Sylhet', 'Mymensingh'];
     let role = localStorage.getItem('role') || null;
 
-    const authInfo = { adlocation, brands, role, user, loading, setLoading, createUser, updateUser, signIn, logOut, signInWithGoogle, signInWithGithub }
+    const authInfo = { modal_close, adlocation, brands, role, user, loading, setLoading, createUser, updateUser, signIn, logOut, signInWithGoogle, signInWithGithub }
 
     return (
         <AuthContext.Provider value={authInfo}>
