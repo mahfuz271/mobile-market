@@ -1,11 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../Contexts/UserContext';
 import useDocumentTitle from '../../Layout/useDocumentTitle';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import Moment from 'react-moment';
 import { toast } from 'react-toastify';
 
 const SingleProduct = () => {
+    let [searchParams, setSearchParams] = useSearchParams();
+    let location = useLocation()
     const { id } = useParams();
     const [product, setProduct] = useState(false)
     const [loadingSave, setloadingSave] = useState(false)
@@ -32,6 +34,11 @@ const SingleProduct = () => {
 
     useEffect(reloadProduct, []);
 
+    useEffect(() => {
+        if (searchParams.get("booknow")) {
+            document.querySelector('.book_now')?.click();
+        }
+    }, [location, product])
     const handleStatusChange = (id, task) => {
         let data = { task, pid: id, title: product.title };
 
@@ -79,10 +86,11 @@ const SingleProduct = () => {
             .then(data => {
                 toast('successfully booked');
                 event.target.reset();
-                setloadingSave(false);
+                reloadProduct();
                 document.querySelector('#updateform .btn-close')?.click();
                 document.querySelector(".modal-backdrop")?.remove("show");
                 document.body.classList.remove("modal-open");
+                setloadingSave(false);
             })
     }
     return (
@@ -99,7 +107,7 @@ const SingleProduct = () => {
                                 </div>
                                 <div className="col-md-6">
                                     <div className="product p-md-2 pt-5 p-lg-4">
-                                        <div> <span className="text-uppercase text-muted brand">{product.location}</span>
+                                        <div> <span className="text-uppercase text-muted brand"><i className="fa fa-map-marker" aria-hidden="true"></i> {product.location}</span>
                                             <h5 className="text-uppercase">{product.title}</h5>
                                             <div className="price d-flex flex-row align-items-center">
                                                 <span className="act-price">${product.resale}
@@ -117,7 +125,7 @@ const SingleProduct = () => {
                                             <li><span>Mobile Number:</span> {product.mobile_number}</li>
                                         </ul>
                                         <div className="cart mt-4 align-items-center">
-                                            <button data-bs-toggle="modal" data-bs-target="#exampleModal" disabled={product.status=='Sold'} className="btn btn-danger text-uppercase me-2 px-4">Book now</button>
+                                            <button data-bs-toggle="modal" data-bs-target="#exampleModal" disabled={product.status == 'Sold'} className="book_now btn btn-danger text-uppercase me-2 px-4">{product.status == 'Sold' ? 'Sold' : 'Book now'}</button>
                                             {product.wishlist < 1 ?
                                                 <button onClick={() => handleStatusChange(product._id, 'added')} title='Add to wishlist' className={`btn wishlist`} type='button'><i className="fa fa-heart text-muted"></i></button>
                                                 :
@@ -125,7 +133,7 @@ const SingleProduct = () => {
                                             }
                                         </div>
                                         <p className="m-0">
-                                            <span className="author">Posted by {product.user.name} {product.user.status == 'Verified' && <i class="fa fa-check-circle"></i>}</span>
+                                            <span className="author">Posted by {product.user.name} {product.user.status == 'Verified' && <i className="fa fa-check-circle"></i>}</span>
                                         </p>
                                     </div>
                                 </div>
@@ -150,6 +158,7 @@ const SingleProduct = () => {
                             </div>
                             <div className="modal-body text-start">
                                 <input type="hidden" name="pid" value={product._id} />
+                                <input type="hidden" name="img" value={product.img} />
                                 <div className="form-group">
                                     <label className="form-label text-primary">Title</label>
                                     <input className="form-control" name='title' type="text" readOnly value={product.title} required />

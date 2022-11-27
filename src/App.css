@@ -124,12 +124,12 @@ footer * {
     font-size: 13px
 }
 
-.single .act-price {
+.price .act-price {
     color: red;
     font-weight: 700
 }
 
-.single .dis-price {
+.price .dis-price {
     text-decoration: line-through
 }
 
