@@ -33,7 +33,7 @@ const Pay = () => {
     return (
         <div>
             <h2>Pay ${order.resale} for {order.title} </h2>
-            <div className='w-96 my-5'>
+            <div className='col-md-6 my-5'>
                 <Elements stripe={stripePromise}>
                     <CheckoutForm
                         order={order}

@@ -1,5 +1,6 @@
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const CheckoutForm = ({ order }) => {
     const [cardError, setCardError] = useState('');
@@ -13,17 +14,19 @@ const CheckoutForm = ({ order }) => {
     const { resale, useremail, username, _id, pid } = order;
 
     useEffect(() => {
-        // Create PaymentIntent as soon as the page loads
-        fetch(process.env.REACT_APP_SERVER_URL + "/create-payment-intent", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                authorization: `bearer ${localStorage.getItem('accessToken')}`
-            },
-            body: JSON.stringify({ price: resale }),
-        })
-            .then((res) => res.json())
-            .then((data) => setClientSecret(data.clientSecret));
+        if (resale) {
+            // Create PaymentIntent as soon as the page loads
+            fetch(process.env.REACT_APP_SERVER_URL + "/create-payment-intent", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    authorization: `bearer ${localStorage.getItem('accessToken')}`
+                },
+                body: JSON.stringify({ price: resale }),
+            })
+                .then((res) => res.json())
+                .then((data) => setClientSecret(data.clientSecret));
+        }
     }, [resale]);
 
     const handleSubmit = async (event) => {
@@ -66,6 +69,7 @@ const CheckoutForm = ({ order }) => {
         );
 
         if (confirmError) {
+            setProcessing(false);
             setCardError(confirmError.message);
             return;
         }
@@ -89,7 +93,6 @@ const CheckoutForm = ({ order }) => {
             })
                 .then(res => res.json())
                 .then(data => {
-                    console.log(data);
                     if (data.insertedId) {
                         setSuccess('Congrats! your payment completed');
                         setTransactionId(paymentIntent.id);
@@ -103,7 +106,7 @@ const CheckoutForm = ({ order }) => {
 
     return (
         <>
-            <form onSubmit={handleSubmit}>
+            {!success && <form onSubmit={handleSubmit}>
                 <CardElement
                     options={{
                         style: {
@@ -127,11 +130,13 @@ const CheckoutForm = ({ order }) => {
                     Pay
                 </button>
             </form>
+            }
             <p className="text-danger">{cardError}</p>
             {
                 success && <div>
                     <p className='text-success'>{success}</p>
                     <p>Your transactionId: <span className='font-bold'>{transactionId}</span></p>
+                    <Link to="/dashboard/myorders">Go to my orders</Link>
                 </div>
             }
         </>
