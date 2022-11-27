@@ -32,7 +32,7 @@ const SingleProduct = () => {
     useEffect(reloadProduct, []);
 
     const handleStatusChange = (id, task) => {
-        let data = { task, pid: id };
+        let data = { task, pid: id, title: product.title };
 
         fetch(process.env.REACT_APP_SERVER_URL + `/wishlist`, {
             method: 'POST',

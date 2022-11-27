@@ -13,6 +13,7 @@ import MyProducts from "../Components/Pages/MyProducts";
 import Users from "../Components/Pages/Users";
 import Products from "../Components/Pages/Products";
 import SingleProduct from "../Components/Pages/SingleProduct";
+import Wishlist from "../Components/Pages/Wishlist";
 
 const Router = createBrowserRouter([
     {
@@ -73,6 +74,10 @@ const Router = createBrowserRouter([
             {
                 path: "/dashboard/users",
                 element: <Users />
+            },
+            {
+                path: "/dashboard/wishlist",
+                element: <Wishlist />
             },
         ]
     },
