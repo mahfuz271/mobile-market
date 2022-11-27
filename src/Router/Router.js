@@ -16,6 +16,7 @@ import SingleProduct from "../Components/Pages/SingleProduct";
 import Wishlist from "../Components/Pages/Wishlist";
 import MyOrders from "../Components/Pages/MyOrders";
 import RoleRoute from "./RoleRoute";
+import Pay from "../Components/Pages/Pay";
 
 const Router = createBrowserRouter([
     {
@@ -84,6 +85,10 @@ const Router = createBrowserRouter([
             {
                 path: "/dashboard/myorders",
                 element: <RoleRoute for_role="buyer"><MyOrders /></RoleRoute>
+            },
+            {
+                path: "/dashboard/pay/:oid",
+                element: <RoleRoute for_role="buyer"><Pay /></RoleRoute>
             },
         ]
     },

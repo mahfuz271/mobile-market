@@ -53,7 +53,7 @@ const MyOrders = () => {
                                     </td>
                                     <td className='text-start'>${s.resale}</td>
                                     <th>
-                                        {s?.paid == 'Paid' ? 'Paid' : <Link className='btn-sm btn btn-outline-primary' to={`/pay/${s._id}`}>Pay</Link>}
+                                        {s?.paid == 'Paid' ? 'Paid' : <Link className='btn-sm btn btn-outline-primary' to={`/dashboard/pay/${s._id}`}>Pay</Link>}
                                     </th>
                                     <th>
                                         <Link className='btn-sm btn btn-info' to={`/advertisement/${s.pid}`}>View Product</Link>

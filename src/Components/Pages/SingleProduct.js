@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../Contexts/UserContext';
 import useDocumentTitle from '../../Layout/useDocumentTitle';
-import { useLocation, useParams, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Moment from 'react-moment';
 import { toast } from 'react-toastify';
 import { useQuery } from '@tanstack/react-query'
@@ -9,6 +9,7 @@ import { useQuery } from '@tanstack/react-query'
 const SingleProduct = () => {
     let [searchParams, setSearchParams] = useSearchParams();
     let location = useLocation()
+    const navigate = useNavigate();
     const { id } = useParams();
     const [loadingSave, setloadingSave] = useState(false)
     const { user, logOut, role, modal_close } = useContext(AuthContext);
@@ -26,7 +27,7 @@ const SingleProduct = () => {
         })
 
     }
-    
+
     const { data: product = false, refetch } = useQuery({ queryKey: ['product'], queryFn: reloadProduct })
 
     useDocumentTitle(product?.title);
@@ -83,12 +84,16 @@ const SingleProduct = () => {
                 return res.json();
             })
             .then(data => {
-                toast('successfully booked');
                 event.target.reset();
                 modal_close();
                 setloadingSave(false);
                 setSearchParams("");
-                refetch();
+                if (data.acknowledged) {
+                    toast('successfully booked');
+                    navigate("/dashboard/myorders");
+                } else {
+                    toast('Error: already booked.');
+                }
             })
     }
     return (

@@ -150,7 +150,7 @@ const MyProducts = () => {
         const current = products.find(odr => odr._id === id);
         let data = new FormData();
         data.append('_id', id);
-        data.append('advertise', (current.status == 'Yes' ? 'No' : 'Yes'));
+        data.append('advertise', (current.advertise == 'Yes' ? 'No' : 'Yes'));
         updateDetails(data);
     }
     return (
