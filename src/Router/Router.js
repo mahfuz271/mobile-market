@@ -12,6 +12,7 @@ import Dashboard from "../Components/Pages/Dashboard";
 import MyProducts from "../Components/Pages/MyProducts";
 import Users from "../Components/Pages/Users";
 import Products from "../Components/Pages/Products";
+import SingleProduct from "../Components/Pages/SingleProduct";
 
 const Router = createBrowserRouter([
     {
@@ -23,7 +24,7 @@ const Router = createBrowserRouter([
                 path: "/",
                 element: <Homepage />,
                 loader: () => {
-                    return fetch(`${process.env.REACT_APP_SERVER_URL}/products?limit=4`);
+                    return fetch(`${process.env.REACT_APP_SERVER_URL}/products?limit=4&advertise=true`);
                 }
             },
             {
@@ -44,11 +45,18 @@ const Router = createBrowserRouter([
             },
             {
                 path: "/category/:txt",
-                element: <Products query='brand' />
+                element: <PrivateRoute><Products query='brand' /></PrivateRoute>
             },
             {
                 path: "/location/:txt",
-                element: <Products query='location' />
+                element: <PrivateRoute><Products query='location' /></PrivateRoute>
+            },
+            {
+                path: "/advertisement/:id",
+                element: <PrivateRoute><SingleProduct /></PrivateRoute>,
+                loader: ({ params }) => {
+                    return fetch(`${process.env.REACT_APP_SERVER_URL}/products/${params.id}`);
+                }
             },
         ]
     },

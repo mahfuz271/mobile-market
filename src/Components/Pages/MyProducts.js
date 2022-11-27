@@ -7,6 +7,7 @@ import { Link, useSearchParams, useLocation } from 'react-router-dom';
 const MyProducts = () => {
     let [searchParams, setSearchParams] = useSearchParams();
     let location = useLocation()
+    const imgHostKey = process.env.REACT_APP_imgbb_key;
 
     useDocumentTitle("Manage My Products");
     const { adlocation, user, logOut, setLoading, loading, brands } = useContext(AuthContext);
@@ -81,12 +82,7 @@ const MyProducts = () => {
 
         }
     }
-    const updateDetails = (data, form = false) => {
-        data.append('email', user.email);
-        let product = Object.fromEntries(data);
-        let status = form == false;
-
-        setLoading(!status);
+    const saveDetailsToServer = (status, product, form) => {
         fetch(process.env.REACT_APP_SERVER_URL + `/myproducts`, {
             method: 'POST',
             headers: {
@@ -111,10 +107,39 @@ const MyProducts = () => {
                     document.querySelector('#modalCloseBs')?.click();
                     document.querySelector(".modal-backdrop")?.remove("show");
                     document.body.classList.remove("modal-open");
-                }else{
+                } else {
                     reloadProducts();
                 }
             })
+    }
+    const updateDetails = (data, form = false) => {
+        data.append('email', user.email);
+        let product = Object.fromEntries(data);
+        let status = form == false;
+
+        setLoading(!status);
+
+        if (product.imagefile.name) {
+            let formdata = new FormData();
+            formdata.append('image', product.imagefile);
+            delete product.imagefile;
+            fetch(`https://api.imgbb.com/1/upload?key=${imgHostKey}`, {
+                method: 'POST',
+                body: formdata
+            })
+                .then(res => {
+                    return res.json();
+                })
+                .then(imgdata => {
+                    if (imgdata.success) {
+                        product.img = imgdata.data.url;
+                        saveDetailsToServer(status, product, form);
+                    }
+                })
+        } else {
+            delete product.imagefile;
+            saveDetailsToServer(status, product, form);
+        }
     }
     const handleSubmit = event => {
         event.preventDefault();
@@ -125,7 +150,7 @@ const MyProducts = () => {
         const current = products.find(odr => odr._id === id);
         let data = new FormData();
         data.append('_id', id);
-        data.append('status', (current.status == 'Unsold' ? 'Sold' : 'Unsold'));
+        data.append('advertise', (current.status == 'Yes' ? 'No' : 'Yes'));
         updateDetails(data);
     }
     return (
@@ -139,8 +164,10 @@ const MyProducts = () => {
                             <tr>
                                 <th className='text-start'>Title</th>
                                 <th>Price</th>
+                                <th>Resale</th>
                                 <th>Date</th>
                                 <th>Status</th>
+                                <th>Advertise</th>
                                 <th>
                                 </th>
                             </tr>
@@ -151,15 +178,19 @@ const MyProducts = () => {
                                 products.map(s => {
                                     return <tr key={s._id}>
                                         <td className='text-start'>{s.title}</td>
-                                        <td className='text-start'>{s.price}</td>
+                                        <td className='text-start'>${s.price}</td>
+                                        <td className='text-start'>${s?.resale}</td>
                                         <td>{s?.created}</td>
                                         <td>
-                                            <button type='button' onClick={() => handleStatusChange(s._id)} className='btn btn-primary mx-2'>{s?.status}</button>
+                                            {s?.status}
+                                        </td>
+                                        <td>
+                                            {s?.status == 'Unsold' && <button type='button' onClick={() => handleStatusChange(s._id)} className='btn-sm btn btn-outline-primary mx-2'>{s?.advertise || 'No'}</button>}
                                         </td>
                                         <th>
-                                            <Link className='btn btn-info me-2' to={`/product/${s._id}`}>View</Link>
-                                            <button data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => handleModify(s._id)} className='btn btn-info mx-2'><i className="fa fa-edit"></i></button>
-                                            <button onClick={() => handleDelete(s._id)} className='btn btn-danger'>X</button>
+                                            <Link className='btn-sm btn btn-info me-2' to={`/advertisement/${s._id}`}>View</Link>
+                                            <button data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => handleModify(s._id)} className='btn-sm btn btn-info mx-2'><i className="fa fa-edit"></i></button>
+                                            <button onClick={() => handleDelete(s._id)} className='btn-sm btn btn-danger'>X</button>
                                         </th>
                                     </tr>
                                 })
@@ -171,7 +202,7 @@ const MyProducts = () => {
             }
             <div className="modal fade" id="exampleModal" tabIndex="-1" aria-hidden="true">
                 <div className="modal-dialog">
-                    <form className="modal-content" onSubmit={handleSubmit} id="updateform">
+                    <form encType="multipart/form-data" className="modal-content" onSubmit={handleSubmit} id="updateform">
                         <div className="modal-header">
                             <h5 className="modal-title">Product</h5>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -185,6 +216,10 @@ const MyProducts = () => {
                             <div className="form-group mt-4">
                                 <label className="form-label text-primary text-capitalize">price</label>
                                 <input className="form-control" name='price' type="number" required />
+                            </div>
+                            <div className="form-group mt-4">
+                                <label className="form-label text-primary text-capitalize">resale</label>
+                                <input className="form-control" name='resale' type="number" required />
                             </div>
                             <div className="form-group mt-4">
                                 <label className="form-label text-primary text-capitalize">mobile number</label>
@@ -226,12 +261,9 @@ const MyProducts = () => {
                                     <option value="Fair">Fair</option>
                                 </select>
                             </div>
-                            <div className="form-group my-4">
-                                <select className="form-select" name='status' required>
-                                    <option value="">Status</option>
-                                    <option>Unsold</option>
-                                    <option>Sold</option>
-                                </select>
+                            <div className="mb-3">
+                                <label htmlFor="formFile" className="form-label">Image</label>
+                                <input className="form-control" name='imagefile' type="file" id="formFile" />
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" id='modalCloseBs' data-bs-dismiss="modal">Close</button>

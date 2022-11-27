@@ -8,36 +8,8 @@
        "name":"Xiaomi"
     },
     {
-       "img":"/brands/Realme-logo.jpg",
-       "name":"Realme"
-    },
-    {
-       "img":"/brands/Vivo-logo.jpg",
-       "name":"Vivo"
-    },
-    {
-       "img":"/brands/Oppo-logo.jpg",
-       "name":"Oppo"
-    },
-    {
        "img":"/brands/apple-logo.jpg",
        "name":"Apple"
-    },
-    {
-       "img":"/brands/Symphony-mobile-logo.jpg",
-       "name":"Symphony"
-    },
-    {
-       "img":"/brands/Tecno-Mobile-logo.jpg",
-       "name":"Tecno"
-    },
-    {
-       "img":"/brands/Walton-logo.jpg",
-       "name":"Walton"
-    },
-    {
-       "img":"/brands/itel-logo.jpg",
-       "name":"itel"
     },
     {
        "img":"/brands/Infinix-logo.jpg",
@@ -46,10 +18,6 @@
     {
        "img":"/brands/OnePlus-logo.jpg",
        "name":"OnePlus"
-    },
-    {
-       "img":"/brands/Motorola-logo.jpg",
-       "name":"Motorola"
     },
     {
        "img":"/brands/nokia-logo.jpg",

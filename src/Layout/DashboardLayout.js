@@ -8,7 +8,7 @@ const DashboardLayout = () => {
             <Header />
             <div className="container-fluid">
                 <div className="row">
-                    <nav id="sidebarMenu" className="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                    <nav id="sidebarMenu" className="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse show">
                         <div className="position-sticky sidebar-sticky py-3">
                             <ul className="nav flex-column">
                                 <li className="nav-item">

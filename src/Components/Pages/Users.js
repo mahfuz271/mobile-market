@@ -113,7 +113,7 @@ const Users = () => {
                                     <td className='text-start'>{s.name}</td>
                                     <td className='text-start'>{s.email}</td>
                                     <th>
-                                        {s.role == 'seller' && <button type='button' onClick={() => handleStatusChange(s._id)} className='btn btn-primary mx-2'>{s?.status}</button>}
+                                        {s.role == 'seller' && <button type='button' onClick={() => handleStatusChange(s._id)} className='btn btn-primary mx-2'>{s?.status || 'Unverified'}</button>}
                                         <button onClick={() => handleDelete(s._id)} className='btn btn-danger'>X</button>
                                     </th>
                                 </tr>
