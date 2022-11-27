@@ -53,10 +53,7 @@ const Router = createBrowserRouter([
             },
             {
                 path: "/advertisement/:id",
-                element: <PrivateRoute><SingleProduct /></PrivateRoute>,
-                loader: ({ params }) => {
-                    return fetch(`${process.env.REACT_APP_SERVER_URL}/products/${params.id}`);
-                }
+                element: <PrivateRoute><SingleProduct /></PrivateRoute>
             },
         ]
     },

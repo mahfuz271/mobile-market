@@ -119,7 +119,7 @@ const MyProducts = () => {
 
         setLoading(!status);
 
-        if (product.imagefile.name) {
+        if (product.imagefile?.name) {
             let formdata = new FormData();
             formdata.append('image', product.imagefile);
             delete product.imagefile;
@@ -182,10 +182,10 @@ const MyProducts = () => {
                                         <td className='text-start'>${s?.resale}</td>
                                         <td>{s?.created}</td>
                                         <td>
-                                            {s?.status}
+                                            {s?.status || "Unsold"}
                                         </td>
                                         <td>
-                                            {s?.status == 'Unsold' && <button type='button' onClick={() => handleStatusChange(s._id)} className='btn-sm btn btn-outline-primary mx-2'>{s?.advertise || 'No'}</button>}
+                                            {s?.status != 'Sold' && <button type='button' onClick={() => handleStatusChange(s._id)} className='btn-sm btn btn-outline-primary mx-2'>{s?.advertise || 'No'}</button>}
                                         </td>
                                         <th>
                                             <Link className='btn-sm btn btn-info me-2' to={`/advertisement/${s._id}`}>View</Link>

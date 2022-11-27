@@ -141,8 +141,13 @@ footer * {
     background-color: #ff0000 !important;
     border-color: #ff0000 !important
 }
+
+.wishlist.btn-primary i {
+    color: #fff !important;
+}
+
 .author {
-    font-family: 'Circular Std',sans-serif;
+    font-family: 'Circular Std', sans-serif;
     font-weight: 700;
     color: #000a34;
     font-size: 16px;
@@ -150,9 +155,11 @@ footer * {
     margin-top: 15px;
     display: inline-block;
 }
-.author .fa{
+
+.author .fa {
     color: blue;
 }
+
 .single .btn-danger:hover {
     background-color: #da0606 !important;
     border-color: #da0606 !important
@@ -160,10 +167,6 @@ footer * {
 
 .single .btn-danger:focus {
     box-shadow: none
-}
-
-.single .cart i {
-    margin-right: 10px
 }
 
 .image_selected img {
