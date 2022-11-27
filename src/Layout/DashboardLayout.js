@@ -1,10 +1,9 @@
 import React, { useContext } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import Header from '../Components/Header/Header';
-import { AuthContext } from '../Contexts/UserContext';
 
 const DashboardLayout = () => {
-    const { role } = useContext(AuthContext);
+    const role = localStorage.getItem('role');
     return (
         <>
             <Header />

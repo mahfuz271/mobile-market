@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 const MyOrders = () => {
     useDocumentTitle("My Orders");
-    const { user, logOut, setLoading, loading } = useContext(AuthContext);
+    const { user, logOut } = useContext(AuthContext);
 
     const [list, setList] = useState([])
 

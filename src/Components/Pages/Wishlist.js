@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 const Wishlist = () => {
     useDocumentTitle("My wishlist");
-    const { user, logOut, setLoading, loading } = useContext(AuthContext);
+    const { user, logOut } = useContext(AuthContext);
 
     const [list, setList] = useState([])
 

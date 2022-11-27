@@ -13,7 +13,7 @@ const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PK);
 const Pay = () => {
     const { oid } = useParams();
     useDocumentTitle("Pay");
-    const { user, logOut } = useContext(AuthContext);
+    const { logOut } = useContext(AuthContext);
 
     const orderGet = async () => {
         return await fetch(`${process.env.REACT_APP_SERVER_URL}/order/${oid}`, {

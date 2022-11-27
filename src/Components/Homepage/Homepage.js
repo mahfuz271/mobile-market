@@ -7,7 +7,7 @@ import ProductLoop from '../Pages/ProductLoop';
 const Homepage = () => {
     useDocumentTitle("Mobile Market");
     let products = useLoaderData();
-    const { user, brands, adlocation } = useContext(AuthContext);
+    const { brands, adlocation } = useContext(AuthContext);
     return (
         <div className='container-fluid'>
             {products.length > 0 && <>

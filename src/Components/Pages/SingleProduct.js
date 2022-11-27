@@ -12,7 +12,8 @@ const SingleProduct = () => {
     const navigate = useNavigate();
     const { id } = useParams();
     const [loadingSave, setloadingSave] = useState(false)
-    const { user, logOut, role, modal_close } = useContext(AuthContext);
+    const { user, logOut, modal_close } = useContext(AuthContext);
+    const role = localStorage.getItem('role');
 
     const reloadProduct = async () => {
         return await fetch(`${process.env.REACT_APP_SERVER_URL}/products/${id}`, {
@@ -36,7 +37,7 @@ const SingleProduct = () => {
         if (searchParams.get("booknow") && role == 'buyer') {
             document.querySelector('.book_now')?.click();
         }
-    }, [location, product, role])
+    }, [location, product])
 
     const handleStatusChange = (id, task) => {
         let data = { task, pid: id, title: product.title };
