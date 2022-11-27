@@ -9,7 +9,7 @@ const Homepage = () => {
     let products = useLoaderData();
     const { user, brands, adlocation } = useContext(AuthContext);
     return (
-        <div>
+        <div className='container-fluid'>
             {products.length > 0 && <>
                 <div className="row mt-5">
                     <div className="col-sm-12">

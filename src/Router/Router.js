@@ -15,6 +15,7 @@ import Products from "../Components/Pages/Products";
 import SingleProduct from "../Components/Pages/SingleProduct";
 import Wishlist from "../Components/Pages/Wishlist";
 import MyOrders from "../Components/Pages/MyOrders";
+import RoleRoute from "./RoleRoute";
 
 const Router = createBrowserRouter([
     {
@@ -26,7 +27,7 @@ const Router = createBrowserRouter([
                 path: "/",
                 element: <Homepage />,
                 loader: () => {
-                    return fetch(`${process.env.REACT_APP_SERVER_URL}/products?limit=4&advertise=true`);
+                    return fetch(`${process.env.REACT_APP_SERVER_URL}/products?advertise=true`);
                 }
             },
             {
@@ -70,19 +71,19 @@ const Router = createBrowserRouter([
             },
             {
                 path: "/dashboard/myproducts",
-                element: <MyProducts />
+                element: <RoleRoute for_role="seller"><MyProducts /></RoleRoute>
             },
             {
                 path: "/dashboard/users",
-                element: <Users />
+                element: <RoleRoute for_role="admin"><Users /></RoleRoute>
             },
             {
                 path: "/dashboard/wishlist",
-                element: <Wishlist />
+                element: <RoleRoute for_role="buyer"><Wishlist /></RoleRoute>
             },
             {
                 path: "/dashboard/myorders",
-                element: <MyOrders />
+                element: <RoleRoute for_role="buyer"><MyOrders /></RoleRoute>
             },
         ]
     },

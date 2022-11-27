@@ -11,7 +11,7 @@ const SingleProduct = () => {
     const { id } = useParams();
     const [product, setProduct] = useState(false)
     const [loadingSave, setloadingSave] = useState(false)
-    const { user, logOut } = useContext(AuthContext);
+    const { user, logOut, role } = useContext(AuthContext);
 
     const reloadProduct = () => {
         fetch(`${process.env.REACT_APP_SERVER_URL}/products/${id}`, {
@@ -35,10 +35,10 @@ const SingleProduct = () => {
     useEffect(reloadProduct, []);
 
     useEffect(() => {
-        if (searchParams.get("booknow")) {
+        if (searchParams.get("booknow") && role == 'buyer') {
             document.querySelector('.book_now')?.click();
         }
-    }, [location, product])
+    }, [location, product, role])
     const handleStatusChange = (id, task) => {
         let data = { task, pid: id, title: product.title };
 
@@ -125,9 +125,9 @@ const SingleProduct = () => {
                                             <li><span>Mobile Number:</span> {product.mobile_number}</li>
                                         </ul>
                                         <div className="cart mt-4 align-items-center">
-                                            <button data-bs-toggle="modal" data-bs-target="#exampleModal" disabled={product.status == 'Sold'} className="book_now btn btn-danger text-uppercase me-2 px-4">{product.status == 'Sold' ? 'Sold' : 'Book now'}</button>
+                                            <button data-bs-toggle="modal" data-bs-target="#exampleModal" disabled={product.status == 'Sold' || role != 'buyer'} className="book_now btn btn-danger text-uppercase me-2 px-4">{product.status == 'Sold' ? 'Sold' : 'Book now'}</button>
                                             {product.wishlist < 1 ?
-                                                <button onClick={() => handleStatusChange(product._id, 'added')} title='Add to wishlist' className={`btn wishlist`} type='button'><i className="fa fa-heart text-muted"></i></button>
+                                                <button onClick={() => handleStatusChange(product._id, 'added')} disabled={role != 'buyer'} title='Add to wishlist' className={`btn wishlist`} type='button'><i className="fa fa-heart text-muted"></i></button>
                                                 :
                                                 <button onClick={() => handleStatusChange(product._id, 'removed')} title='Remove from to wishlist' className={`btn wishlist btn-primary`} type='button'><i className="fa fa-heart text-muted"></i></button>
                                             }

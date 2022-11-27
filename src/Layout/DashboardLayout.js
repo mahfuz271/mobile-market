@@ -1,8 +1,10 @@
 import React, { useContext } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import Header from '../Components/Header/Header';
+import { AuthContext } from '../Contexts/UserContext';
 
 const DashboardLayout = () => {
+    const { role } = useContext(AuthContext);
     return (
         <>
             <Header />
@@ -16,41 +18,46 @@ const DashboardLayout = () => {
                                         Dashboard
                                     </Link>
                                 </li>
-                                <li className="nav-item">
+                                {role == 'buyer' && <><li className="nav-item">
                                     <Link className="nav-link" to="/dashboard/myorders">
                                         My orders
                                     </Link>
                                 </li>
-                                <li className="nav-item">
-                                    <Link className="nav-link" to="/dashboard/myproducts?addproduct=true">
-                                        Add A product
-                                    </Link>
-                                </li>
-                                <li className="nav-item">
-                                    <Link className="nav-link" to="/dashboard/myproducts">
-                                        My Products
-                                    </Link>
-                                </li>
-                                <li className="nav-item">
-                                    <Link className="nav-link" to="/dashboard/users?buyer=true">
-                                        All Buyers
-                                    </Link>
-                                </li>
-                                <li className="nav-item">
-                                    <Link className="nav-link" to="/dashboard/users">
-                                        All Sellers
-                                    </Link>
-                                </li>
-                                <li className="nav-item">
-                                    <Link className="nav-link" to="/dashboard/wishlist">
-                                        Wishlist
-                                    </Link>
-                                </li>
+                                    <li className="nav-item">
+                                        <Link className="nav-link" to="/dashboard/wishlist">
+                                            Wishlist
+                                        </Link>
+                                    </li></>
+                                }
+                                {role == 'seller' && <>
+                                    <li className="nav-item">
+                                        <Link className="nav-link" to="/dashboard/myproducts?addproduct=true">
+                                            Add A product
+                                        </Link>
+                                    </li>
+                                    <li className="nav-item">
+                                        <Link className="nav-link" to="/dashboard/myproducts">
+                                            My Products
+                                        </Link>
+                                    </li></>
+                                }
+                                {role == 'admin' && <>
+                                    <li className="nav-item">
+                                        <Link className="nav-link" to="/dashboard/users?buyer=true">
+                                            All Buyers
+                                        </Link>
+                                    </li>
+                                    <li className="nav-item">
+                                        <Link className="nav-link" to="/dashboard/users">
+                                            All Sellers
+                                        </Link>
+                                    </li></>
+                                }
                             </ul>
                         </div>
                     </nav>
 
-                    <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 mt-3">
+                    <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 mt-3 overflow-auto">
                         <Outlet />
                     </main>
                 </div>
